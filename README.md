@@ -1,6 +1,4 @@
 # TubesStd
-#ifndef EMERGENCY_PRIORITY_H
-#define EMERGENCY_PRIORITY_H
 #include <iostream>
 #include <string>
 using namespace std;
@@ -31,16 +29,18 @@ void searchRange(adrNode root, int low, int high);
 void printTree(adrNode root, int space);
 
 #endif
-#include "emergency_priority.h"
+#include "Header.h"
 
+/* Membuat node baru */
 adrNode createNode(EmergencyCase ec) {
-    adrNode p = new Node;
-    p->data = ec;
-    p->left = NULL;
-    p->right = NULL;
-    return p;
+    adrNode newNode = new Node;
+    newNode->data = ec;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
 }
 
+/* Insert data ke BST */
 void insertCase(adrNode &root, EmergencyCase ec) {
     if (root == NULL) {
         root = createNode(ec);
@@ -51,18 +51,36 @@ void insertCase(adrNode &root, EmergencyCase ec) {
     }
 }
 
+/* Mencari node berdasarkan priority */
+adrNode searchNode(adrNode root, int priority) {
+    if (root == NULL || root->data.priority == priority) {
+        return root;
+    } else if (priority < root->data.priority) {
+        return searchNode(root->left, priority);
+    } else {
+        return searchNode(root->right, priority);
+    }
+}
+
+/* Mencari node minimum */
 adrNode findMin(adrNode root) {
-    if (root->left == NULL)
-        return root;
-    return findMin(root->left);
+    if (root == NULL) return NULL;
+    while (root->left != NULL) {
+        root = root->left;
+    }
+    return root;
 }
 
+/* Mencari node maksimum */
 adrNode findMax(adrNode root) {
-    if (root->right == NULL)
-        return root;
-    return findMax(root->right);
+    if (root == NULL) return NULL;
+    while (root->right != NULL) {
+        root = root->right;
+    }
+    return root;
 }
 
+/* Menghapus node berdasarkan priority */
 adrNode deleteCase(adrNode root, int priority) {
     if (root == NULL) return NULL;
 
@@ -71,112 +89,119 @@ adrNode deleteCase(adrNode root, int priority) {
     } else if (priority > root->data.priority) {
         root->right = deleteCase(root->right, priority);
     } else {
-        if (root->left == NULL && root->right == NULL) {
+        // Node dengan 1 atau 0 anak
+        if (root->left == NULL) {
+            adrNode temp = root->right;
             delete root;
-            root = NULL;
-        } else if (root->left == NULL) {
-            adrNode temp = root;
-            root = root->right;
-            delete temp;
+            return temp;
         } else if (root->right == NULL) {
-            adrNode temp = root;
-            root = root->left;
-            delete temp;
-        } else {
-            adrNode temp = findMin(root->right);
-            root->data = temp->data;
-            root->right = deleteCase(root->right, temp->data.priority);
+            adrNode temp = root->left;
+            delete root;
+            return temp;
         }
+
+        // Node dengan 2 anak
+        adrNode temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteCase(root->right, temp->data.priority);
     }
     return root;
 }
 
-adrNode searchNode(adrNode root, int priority) {
-    if (root == NULL || root->data.priority == priority)
-        return root;
-    if (priority < root->data.priority)
-        return searchNode(root->left, priority);
-    return searchNode(root->right, priority);
-}
-
+/* Mencari successor */
 adrNode findSuccessor(adrNode root, int priority) {
-    adrNode curr = searchNode(root, priority);
-    if (curr == NULL) return NULL;
-    if (curr->right != NULL)
-        return findMin(curr->right);
+    adrNode successor = NULL;
 
-    adrNode succ = NULL;
     while (root != NULL) {
         if (priority < root->data.priority) {
-            succ = root;
+            successor = root;
             root = root->left;
-        } else if (priority > root->data.priority) {
+        }
+        else if (priority > root->data.priority) {
             root = root->right;
-        } else break;
+        }
+        else {
+            if (root->right != NULL)
+                successor = findMin(root->right);
+            root = NULL;
+        }
     }
-    return succ;
+    return successor;
 }
 
-adrNode findPredecessor(adrNode root, int priority) {
-    adrNode curr = searchNode(root, priority);
-    if (curr == NULL) return NULL;
-    if (curr->left != NULL)
-        return findMax(curr->left);
 
-    adrNode pred = NULL;
+/* Mencari predecessor */
+adrNode findPredecessor(adrNode root, int priority) {
+    adrNode predecessor = NULL;
+
     while (root != NULL) {
         if (priority > root->data.priority) {
-            pred = root;
+            predecessor = root;
             root = root->right;
-        } else if (priority < root->data.priority) {
+        }
+        else if (priority < root->data.priority) {
             root = root->left;
-        } else break;
+        }
+        else {
+            if (root->left != NULL)
+                predecessor = findMax(root->left);
+            root = NULL;
+        }
     }
-    return pred;
+    return predecessor;
 }
 
+
+/* Traversal inorder */
 void inorder(adrNode root) {
     if (root != NULL) {
         inorder(root->left);
-        cout << root->data.priority << " - "
-             << root->data.description << endl;
+        cout << "Priority: " << root->data.priority
+             << " | Desc: " << root->data.description << endl;
         inorder(root->right);
     }
 }
 
+/* Menghitung jumlah node pada level tertentu */
 int countAtLevel(adrNode root, int level) {
     if (root == NULL) return 0;
     if (level == 0) return 1;
-    return countAtLevel(root->left, level - 1)
-         + countAtLevel(root->right, level - 1);
+    return countAtLevel(root->left, level - 1) +
+           countAtLevel(root->right, level - 1);
 }
 
+/* Mencari data dalam range priority */
 void searchRange(adrNode root, int low, int high) {
-    if (root != NULL) {
-        if (root->data.priority > low)
-            searchRange(root->left, low, high);
-        if (root->data.priority >= low &&
-            root->data.priority <= high)
-            cout << root->data.priority << " - "
-                 << root->data.description << endl;
-        if (root->data.priority < high)
-            searchRange(root->right, low, high);
-    }
+    if (root == NULL) return;
+
+    if (root->data.priority > low)
+        searchRange(root->left, low, high);
+
+    if (root->data.priority >= low && root->data.priority <= high)
+        cout << "Priority: " << root->data.priority
+             << " | Desc: " << root->data.description << endl;
+
+    if (root->data.priority < high)
+        searchRange(root->right, low, high);
 }
 
+/* Print tree (visual) */
 void printTree(adrNode root, int space) {
-    if (root != NULL) {
-        space += 5;
-        printTree(root->right, space);
-        cout << endl;
-        for (int i = 5; i < space; i++)
-            cout << " ";
-        cout << root->data.priority;
-        printTree(root->left, space);
-    }
+    if (root == NULL) return;
+
+    space += 5;
+    printTree(root->right, space);
+
+    cout << endl;
+    for (int i = 5; i < space; i++)
+        cout << " ";
+    cout << root->data.priority << endl;
+
+    printTree(root->left, space);
 }
+
 #include <iostream>
-#include "emergency_priority.h"
+#include "Header.h"
 
 int main() {
     adrNode root = NULL;
@@ -199,48 +224,60 @@ int main() {
         cin >> pilih;
 
         if (pilih == 1) {
+            cout << "Masukkan priority: ";
             cin >> ec.priority;
             cin.ignore();
+            cout << "Masukkan deskripsi: ";
             getline(cin, ec.description);
             insertCase(root, ec);
         }
         else if (pilih == 2) {
+            cout << "Masukkan priority yang dihapus: ";
             cin >> key;
             root = deleteCase(root, key);
         }
         else if (pilih == 3) {
+            cout << "\nData inorder:\n";
             inorder(root);
         }
         else if (pilih == 4) {
+            cout << "Masukkan priority: ";
             cin >> key;
             p = findSuccessor(root, key);
             if (p != NULL)
-                cout << p->data.priority;
+                cout << "Successor: " << p->data.priority << endl;
             else
-                cout << "Tidak ada";
+                cout << "Tidak ada successor\n";
         }
         else if (pilih == 5) {
+            cout << "Masukkan priority: ";
             cin >> key;
             p = findPredecessor(root, key);
             if (p != NULL)
-                cout << p->data.priority;
+                cout << "Predecessor: " << p->data.priority << endl;
             else
-                cout << "Tidak ada";
+                cout << "Tidak ada predecessor\n";
         }
         else if (pilih == 6) {
+            cout << "Masukkan level: ";
             cin >> level;
-            cout << countAtLevel(root, level);
+            cout << "Jumlah node pada level " << level
+                 << " = " << countAtLevel(root, level) << endl;
         }
         else if (pilih == 7) {
+            cout << "Masukkan range (low high): ";
             cin >> low >> high;
             searchRange(root, low, high);
         }
         else if (pilih == 8) {
+            cout << "\nStruktur tree:\n";
             printTree(root, 0);
+        }
+        else if (pilih != 0) {
+            cout << "Menu tidak valid!\n";
         }
 
     } while (pilih != 0);
 
     return 0;
 }
-
