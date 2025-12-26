@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1743445502 source:d:\tugasbesarstdkelompok16\tubesstd\main.cpp
+	<iostream>
+
+1766774392 source:d:\tugasbesarstdkelompok16\tubesstd\bst.cpp
+	"header.h"
+
+1766774400 d:\tugasbesarstdkelompok16\tubesstd\header.h
+	<iostream>
+	<string>
+
