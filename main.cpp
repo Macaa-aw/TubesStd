@@ -1,5 +1,4 @@
 #include "header.h"
-
 using namespace std;
 
 int main() {
@@ -7,7 +6,7 @@ int main() {
     int pilih = -1;
 
     while (pilih != 0) {
-        cout << "\n=== SISTEM MANAJEMEN PRIORITAS DARURAT===\n";
+        cout << "\n=== SISTEM MANAJEMEN PRIORITAS DARURAT (BST) ===\n";
         cout << "1. Insert Kasus\n";
         cout << "2. Delete Kasus\n";
         cout << "3. Search Kasus\n";
@@ -17,6 +16,9 @@ int main() {
         cout << "7. Hitung Node Pada Level\n";
         cout << "8. Cari Berdasarkan Range Prioritas\n";
         cout << "9. Print Tree\n";
+        cout << "10. Cek Tinggi Tree\n";
+        cout << "11. Cek Keseimbangan Tree\n";
+        cout << "12. Hapus Semua Tree\n";
         cout << "0. Keluar\n";
         cout << "Pilih menu: ";
         cin >> pilih;
@@ -26,74 +28,109 @@ int main() {
             string info;
             cout << "Priority : ";
             cin >> pr;
-            cout << "Info     : ";
             cin.ignore();
+            cout << "Info     : ";
             getline(cin, info);
             root = insertNode(root, pr, info);
         }
+
         else if (pilih == 2) {
             int pr;
             cout << "Priority yang dihapus: ";
             cin >> pr;
             root = deleteNode(root, pr);
         }
+
         else if (pilih == 3) {
             int pr;
             cout << "Priority dicari: ";
             cin >> pr;
             adrNode hasil = searchNode(root, pr);
+
             if (hasil != nullptr)
                 cout << "Ditemukan: " << hasil->info << endl;
             else
                 cout << "Data tidak ditemukan\n";
         }
-        else if (pilih == 4)
+
+        else if (pilih == 4) {
+            cout << "\n=== INORDER TRAVERSAL ===\n";
             inorder(root);
+        }
 
         else if (pilih == 5) {
             int pr;
             cout << "Priority: ";
             cin >> pr;
             adrNode s = findSuccessor(root, pr);
+
             if (s != nullptr)
                 cout << "Successor: " << s->priority << " - " << s->info << endl;
             else
                 cout << "Tidak ada successor\n";
         }
+
         else if (pilih == 6) {
             int pr;
             cout << "Priority: ";
             cin >> pr;
             adrNode p = findPredecessor(root, pr);
+
             if (p != nullptr)
                 cout << "Predecessor: " << p->priority << " - " << p->info << endl;
             else
                 cout << "Tidak ada predecessor\n";
         }
+
         else if (pilih == 7) {
             int lvl;
             cout << "Level: ";
             cin >> lvl;
-            cout << "Jumlah node = " << countAtLevel(root, lvl) << endl;
+            cout << "Jumlah node pada level " << lvl
+                 << " = " << countAtLevel(root, lvl) << endl;
         }
+
         else if (pilih == 8) {
             int low, high;
-            cout << "Range rendah: ";
+            cout << "Range rendah  : ";
             cin >> low;
-            cout << "Range tinggi: ";
+            cout << "Range tinggi  : ";
             cin >> high;
+            cout << "\nData dalam range:\n";
             searchRange(root, low, high);
         }
-        else if (pilih == 9)
-            printTree(root, 0, 6);
 
-        else if (pilih == 0){
+        else if (pilih == 9) {
+            cout << "\n=== STRUKTUR TREE ===\n";
+            printTree(root, 0, 6);
+        }
+
+        else if (pilih == 10) {
+            cout << "Tinggi Tree = " << height(root) << endl;
+        }
+
+        else if (pilih == 11) {
+            if (isBalanced(root))
+                cout << "Tree Seimbang\n";
+            else
+                cout << "Tree Tidak Seimbang\n";
+        }
+
+        else if (pilih == 12) {
+            clearTree(root);
+            cout << "SEMUA DATA TREE BERHASIL DIHAPUS!\n";
+        }
+
+        else if (pilih == 0) {
             clearTree(root);
             cout << "Keluar...\n";
         }
-        else
+
+        else {
             cout << "Pilihan tidak valid!\n";
+        }
     }
 
     return 0;
 }
+
