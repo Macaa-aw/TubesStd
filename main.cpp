@@ -1,11 +1,13 @@
-#include "Header.h"
+#include "header.h"
+
+using namespace std;
 
 int main() {
     adrNode root = nullptr;
     int pilih = -1;
 
     while (pilih != 0) {
-        cout << "\n=== SISTEM MANAJEMEN PRIORITAS DARURAT ===\n";
+        cout << "\n=== SISTEM MANAJEMEN PRIORITAS DARURAT===\n";
         cout << "1. Insert Kasus\n";
         cout << "2. Delete Kasus\n";
         cout << "3. Search Kasus\n";
@@ -19,93 +21,79 @@ int main() {
         cout << "Pilih menu: ";
         cin >> pilih;
 
-        switch (pilih) {
-            case 1: {
-                int pr;
-                infotype info;
-                cout << "Priority : ";
-                cin >> pr;
-                cout << "Info     : ";
-                cin >> info;
-                root = insertNode(root, pr, info);
-                break;
-            }
-
-            case 2: {
-                int pr;
-                cout << "Priority yang dihapus: ";
-                cin >> pr;
-                root = deleteNode(root, pr);
-                break;
-            }
-
-            case 3: {
-                int pr;
-                cout << "Priority dicari: ";
-                cin >> pr;
-                adrNode hasil = searchNode(root, pr);
-                if (hasil != nullptr)
-                    cout << "Ditemukan: " << hasil->info << endl;
-                else
-                    cout << "Data tidak ditemukan\n";
-                break;
-            }
-
-            case 4:
-                inorder(root);
-                break;
-
-            case 5: {
-                int pr;
-                cout << "Priority: ";
-                cin >> pr;
-                adrNode s = findSuccessor(root, pr);
-                if (s != nullptr)
-                    cout << "Successor: " << s->priority << " - " << s->info << endl;
-                else
-                    cout << "Tidak ada successor\n";
-                break;
-            }
-
-            case 6: {
-                int pr;
-                cout << "Priority: ";
-                cin >> pr;
-                adrNode p = findPredecessor(root, pr);
-                if (p != nullptr)
-                    cout << "Predecessor: " << p->priority << " - " << p->info << endl;
-                else
-                    cout << "Tidak ada predecessor\n";
-                break;
-            }
-
-            case 7: {
-                int lvl;
-                cout << "Level: ";
-                cin >> lvl;
-                cout << "Jumlah node di level " << lvl << " = " << countAtLevel(root, lvl) << endl;
-                break;
-            }
-
-            case 8: {
-                int low, high;
-                cout << "Range rendah: ";
-                cin >> low;
-                cout << "Range tinggi: ";
-                cin >> high;
-                searchRange(root, low, high);
-                break;
-            }
-
-            case 9: {
-                cout << "\n=== STRUKTUR TREE (90 Derajat) ===\n" << endl;
-                printTree(root, 0, 5);  // gap = 5 spasi per level
-                cout << endl;
-                break;
-            }
+        if (pilih == 1) {
+            int pr;
+            string info;
+            cout << "Priority : ";
+            cin >> pr;
+            cout << "Info     : ";
+            cin.ignore();
+            getline(cin, info);
+            root = insertNode(root, pr, info);
         }
+        else if (pilih == 2) {
+            int pr;
+            cout << "Priority yang dihapus: ";
+            cin >> pr;
+            root = deleteNode(root, pr);
+        }
+        else if (pilih == 3) {
+            int pr;
+            cout << "Priority dicari: ";
+            cin >> pr;
+            adrNode hasil = searchNode(root, pr);
+            if (hasil != nullptr)
+                cout << "Ditemukan: " << hasil->info << endl;
+            else
+                cout << "Data tidak ditemukan\n";
+        }
+        else if (pilih == 4)
+            inorder(root);
+
+        else if (pilih == 5) {
+            int pr;
+            cout << "Priority: ";
+            cin >> pr;
+            adrNode s = findSuccessor(root, pr);
+            if (s != nullptr)
+                cout << "Successor: " << s->priority << " - " << s->info << endl;
+            else
+                cout << "Tidak ada successor\n";
+        }
+        else if (pilih == 6) {
+            int pr;
+            cout << "Priority: ";
+            cin >> pr;
+            adrNode p = findPredecessor(root, pr);
+            if (p != nullptr)
+                cout << "Predecessor: " << p->priority << " - " << p->info << endl;
+            else
+                cout << "Tidak ada predecessor\n";
+        }
+        else if (pilih == 7) {
+            int lvl;
+            cout << "Level: ";
+            cin >> lvl;
+            cout << "Jumlah node = " << countAtLevel(root, lvl) << endl;
+        }
+        else if (pilih == 8) {
+            int low, high;
+            cout << "Range rendah: ";
+            cin >> low;
+            cout << "Range tinggi: ";
+            cin >> high;
+            searchRange(root, low, high);
+        }
+        else if (pilih == 9)
+            printTree(root, 0, 6);
+
+        else if (pilih == 0){
+            clearTree(root);
+            cout << "Keluar...\n";
+        }
+        else
+            cout << "Pilihan tidak valid!\n";
     }
 
     return 0;
 }
-
