@@ -1,7 +1,9 @@
-#include "header.h"
+#include "Header.h"
 
-/* ===================== CREATE NODE ===================== */
-adrNode createNode(int priority, string info) {
+/* =====================
+   CREATE NODE
+   ===================== */
+adrNode createNode(int priority, infotype info) {
     adrNode p = new Node;
     p->priority = priority;
     p->info = info;
@@ -10,82 +12,43 @@ adrNode createNode(int priority, string info) {
     return p;
 }
 
-/* ===================== INSERT ===================== */
-adrNode insertNode(adrNode root, int priority, string info) {
+/* =====================
+   INSERT NODE
+   ===================== */
+adrNode insertNode(adrNode root, int priority, infotype info) {
     if (root == nullptr) {
         return createNode(priority, info);
     }
 
     if (priority < root->priority) {
         root->left = insertNode(root->left, priority, info);
-    } else if (priority > root->priority) {
+    }
+    else if (priority > root->priority) {
         root->right = insertNode(root->right, priority, info);
-    } else {
-        cout << "Priority sudah ada, data tidak dimasukkan.\n";
     }
 
     return root;
 }
 
-/* ===================== SEARCH ===================== */
+/* =====================
+   SEARCH NODE
+   ===================== */
 adrNode searchNode(adrNode root, int priority) {
-    if (root == nullptr || root->priority == priority) {
-        return root;
+    adrNode result = nullptr;
+
+    if (root != nullptr) {
+        if (root->priority == priority) {
+            result = root;
+        } else if (priority < root->priority) {
+            result = searchNode(root->left, priority);
+        } else {
+            result = searchNode(root->right, priority);
+        }
     }
 
-    if (priority < root->priority) {
-        return searchNode(root->left, priority);
-    }
-
-    return searchNode(root->right, priority);
+    return result;
 }
 
-/* ===================== FIND MIN ===================== */
-adrNode findMin(adrNode root) {
-    while (root && root->left != nullptr) {
-        root = root->left;
-    }
-    return root;
-}
-
-/* ===================== DELETE ===================== */
-adrNode deleteNode(adrNode root, int priority) {
-    if (root == nullptr) {
-        return nullptr;
-    }
-
-    if (priority < root->priority) {
-        root->left = deleteNode(root->left, priority);
-    } else if (priority > root->priority) {
-        root->right = deleteNode(root->right, priority);
-    } else {
-        if (root->left == nullptr && root->right == nullptr) {
-            delete root;
-            return nullptr;
-        }
-
-        if (root->left == nullptr) {
-            adrNode temp = root->right;
-            delete root;
-            return temp;
-        }
-
-        if (root->right == nullptr) {
-            adrNode temp = root->left;
-            delete root;
-            return temp;
-        }
-
-        adrNode temp = findMin(root->right);
-        root->priority = temp->priority;
-        root->info = temp->info;
-        root->right = deleteNode(root->right, temp->priority);
-    }
-
-    return root;
-}
-
-/* ===================== SUCCESSOR ===================== */
 adrNode findSuccessor(adrNode root, int priority) {
     adrNode succ = nullptr;
 
@@ -101,7 +64,6 @@ adrNode findSuccessor(adrNode root, int priority) {
     return succ;
 }
 
-/* ===================== PREDECESSOR ===================== */
 adrNode findPredecessor(adrNode root, int priority) {
     adrNode pred = nullptr;
 
@@ -117,7 +79,64 @@ adrNode findPredecessor(adrNode root, int priority) {
     return pred;
 }
 
-/* ===================== INORDER ===================== */
+/* =====================
+   FIND MIN
+   ===================== */
+adrNode findMin(adrNode root) {
+    adrNode result = nullptr;
+
+    if (root != nullptr) {
+        while (root->left != nullptr) {
+            root = root->left;
+        }
+        result = root;
+    }
+
+    return result;
+}
+/* =====================
+   DELETE NODE
+   ===================== */
+adrNode deleteNode(adrNode root, int priority) {
+    adrNode result = root;
+
+    if (root != nullptr) {
+        if (priority < root->priority) {
+            root->left = deleteNode(root->left, priority);
+        }
+        else if (priority > root->priority) {
+            root->right = deleteNode(root->right, priority);
+        }
+        else {
+            // Kasus 1: Tidak punya child
+            if (root->left == nullptr && root->right == nullptr) {
+                delete root;
+                result = nullptr;
+            }
+            // Kasus 2: Punya satu child
+            else if (root->left == nullptr) {
+                adrNode temp = root->right;
+                delete root;
+                result = temp;
+            }
+            else if (root->right == nullptr) {
+                adrNode temp = root->left;
+                delete root;
+                result = temp;
+            }
+            // Kasus 3: Punya dua child
+            else {
+                adrNode temp = findMin(root->right);
+                root->priority = temp->priority;
+                root->info = temp->info;
+                root->right = deleteNode(root->right, temp->priority);
+            }
+        }
+    }
+
+    return result;
+}
+
 void inorder(adrNode root) {
     if (root != nullptr) {
         inorder(root->left);
@@ -127,21 +146,22 @@ void inorder(adrNode root) {
     }
 }
 
-/* ===================== COUNT LEVEL ===================== */
+
 int countAtLevel(adrNode root, int level) {
-    if (root == nullptr) {
-        return 0;
+    int count = 0;
+
+    if (root != nullptr) {
+        if (level == 0) {
+            count = 1;
+        } else {
+            count = countAtLevel(root->left, level - 1) + countAtLevel(root->right, level - 1);
+        }
     }
 
-    if (level == 0) {
-        return 1;
-    }
-
-    return countAtLevel(root->left, level - 1)
-         + countAtLevel(root->right, level - 1);
+    return count;
 }
 
-/* ===================== RANGE SEARCH ===================== */
+
 void searchRange(adrNode root, int low, int high) {
     if (root == nullptr) {
         return;
@@ -152,8 +172,7 @@ void searchRange(adrNode root, int low, int high) {
     }
 
     if (low <= root->priority && root->priority <= high) {
-        cout << "Priority : " << root->priority
-             << " | Info : " << root->info << endl;
+        cout << "Priority : " << root->priority << " | Info : " << root->info << endl;
     }
 
     if (high > root->priority) {
@@ -161,20 +180,24 @@ void searchRange(adrNode root, int low, int high) {
     }
 }
 
-/* ===================== PRINT TREE ===================== */
+
 void printTree(adrNode root, int space, int gap) {
     if (root == nullptr) {
-        return;
+        return;  // ← CUKUP RETURN SAJA, TANPA COUT
     }
 
     space += gap;
+
+    // Print anak kanan dulu (atas)
     printTree(root->right, space, gap);
 
+    // Print node saat ini
     cout << endl;
     for (int i = gap; i < space; i++) {
         cout << " ";
     }
-    cout << root->priority << endl;
+    cout << "[" << root->priority << "] " << root->info << endl;
 
+    // Print anak kiri (bawah)
     printTree(root->left, space, gap);
 }
