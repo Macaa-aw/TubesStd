@@ -1,6 +1,9 @@
 #include "header.h"
 
 /* ===================== CREATE NODE ===================== */
+/* I.S : Belum ada node baru, data priority dan info tersedia
+   F.S : Node baru terbentuk dengan priority dan info,
+         left dan right bernilai nullptr */
 adrNode createNode(int priority, string info) {
     adrNode p = new Node;
     p->priority = priority;
@@ -11,6 +14,8 @@ adrNode createNode(int priority, string info) {
 }
 
 /* ===================== INSERT ===================== */
+/* I.S : Tree mungkin kosong atau sudah berisi node
+   F.S : Node baru ditambahkan sesuai aturan BST */
 adrNode insertNode(adrNode root, int priority, string info) {
     if (root == nullptr)
         return createNode(priority, info);
@@ -26,6 +31,9 @@ adrNode insertNode(adrNode root, int priority, string info) {
 }
 
 /* ===================== SEARCH ===================== */
+/* I.S : Tree berisi data
+   F.S : Mengembalikan alamat node jika ditemukan,
+         atau nullptr jika tidak ditemukan */
 adrNode searchNode(adrNode root, int priority) {
     if (root == nullptr || root->priority == priority)
         return root;
@@ -36,6 +44,8 @@ adrNode searchNode(adrNode root, int priority) {
 }
 
 /* ===================== FIND MIN ===================== */
+/* I.S : Tree tidak kosong
+   F.S : Mengembalikan node dengan priority terkecil */
 adrNode findMin(adrNode root) {
     while (root && root->left != nullptr)
         root = root->left;
@@ -43,6 +53,8 @@ adrNode findMin(adrNode root) {
 }
 
 /* ===================== DELETE ===================== */
+/* I.S : Tree berisi data
+   F.S : Node dengan priority tertentu dihapus dari tree */
 adrNode deleteNode(adrNode root, int priority) {
     if (root == nullptr)
         return nullptr;
@@ -79,6 +91,8 @@ adrNode deleteNode(adrNode root, int priority) {
 }
 
 /* ===================== SUCCESSOR ===================== */
+/* I.S : Tree berisi data
+   F.S : Mengembalikan node successor dari priority tertentu */
 adrNode findSuccessor(adrNode root, int priority) {
     adrNode succ = nullptr;
     while (root != nullptr) {
@@ -92,6 +106,8 @@ adrNode findSuccessor(adrNode root, int priority) {
 }
 
 /* ===================== PREDECESSOR ===================== */
+/* I.S : Tree berisi data
+   F.S : Mengembalikan node predecessor dari priority tertentu */
 adrNode findPredecessor(adrNode root, int priority) {
     adrNode pred = nullptr;
     while (root != nullptr) {
@@ -105,6 +121,8 @@ adrNode findPredecessor(adrNode root, int priority) {
 }
 
 /* ===================== TRAVERSAL ===================== */
+/* I.S : Tree berisi data
+   F.S : Data ditampilkan secara inorder */
 void inorder(adrNode root){
     if(root != nullptr){
         inorder(root->left);
@@ -114,6 +132,8 @@ void inorder(adrNode root){
     }
 }
 
+/* I.S : Tree berisi data
+   F.S : Data ditampilkan secara preorder */
 void preorder(adrNode root){
     if(root != nullptr){
         cout << root->priority << " - " << root->info << endl;
@@ -122,6 +142,8 @@ void preorder(adrNode root){
     }
 }
 
+/* I.S : Tree berisi data
+   F.S : Data ditampilkan secara postorder */
 void postorder(adrNode root){
     if(root != nullptr){
         postorder(root->left);
@@ -131,6 +153,8 @@ void postorder(adrNode root){
 }
 
 /* ===================== LEVEL COUNT ===================== */
+/* I.S : Tree berisi data dan level diketahui
+   F.S : Mengembalikan jumlah node pada level tertentu */
 int countAtLevel(adrNode root, int level){
     if(root == nullptr)
         return 0;
@@ -141,6 +165,8 @@ int countAtLevel(adrNode root, int level){
 }
 
 /* ===================== RANGE ===================== */
+/* I.S : Tree berisi data dan batas range diketahui
+   F.S : Menampilkan node yang berada dalam range */
 void searchRange(adrNode root, int low, int high){
     if(root == nullptr)
         return;
@@ -156,6 +182,8 @@ void searchRange(adrNode root, int low, int high){
 }
 
 /* ===================== PRINT TREE ===================== */
+/* I.S : Tree berisi data
+   F.S : Tree ditampilkan secara visual ke layar */
 void printTree(adrNode root, int space, int gap){
     if(root == nullptr)
         return;
@@ -173,6 +201,8 @@ void printTree(adrNode root, int space, int gap){
 }
 
 /* ===================== HEIGHT ===================== */
+/* I.S : Tree berisi data
+   F.S : Mengembalikan tinggi tree */
 int height(adrNode root){
     if (root == nullptr){
         return -1;
@@ -191,7 +221,9 @@ int height(adrNode root){
     return result + 1;
 }
 
-/* ===================== BALANCE ===================== */
+/* ===================== BALANCE ===================== */\
+/* I.S : Tree berisi data
+   F.S : Mengembalikan true jika tree seimbang */
 bool isBalanced(adrNode root){
     if(root == nullptr)
         return true;
@@ -206,6 +238,8 @@ bool isBalanced(adrNode root){
 }
 
 /* ===================== CLEAR ===================== */
+/* I.S : Tree berisi data
+   F.S : Seluruh node dihapus dan root menjadi nullptr */
 void clearTree(adrNode &root){
     if(root != nullptr){
         clearTree(root->left);
@@ -214,3 +248,4 @@ void clearTree(adrNode &root){
         root = nullptr;
     }
 }
+
